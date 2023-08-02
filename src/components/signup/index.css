@@ -70,3 +70,7 @@
   .signup-form button[type="button"]:hover {
     background-color: #c0392b;
   }
+  #error-msg{
+    color: red;
+    font-weight: bold;
+  }

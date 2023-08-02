@@ -1,7 +1,41 @@
-import './index.css'
+import axios from "axios"
+import './index.css';
+
 
 const Login = (props) => {
-  const {CancelLogin} = props
+  const {CancelLogin, loginSuccess} = props;
+  const getLogin = async (event) => {
+    event.preventDefault();
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let params = new URLSearchParams();
+    params.append("email", email);
+    params.append("password", password);
+    const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/login", params.toString());
+    //console.log(response.data);
+    if (response.data.message === "User Checking Success"){
+      loginSuccess()
+      const userDetails = {
+        id: response.data.message,
+        name: response.data.user_name,
+        email: response.data.email,
+        adderss: response.data.adderss
+      }
+      localStorage.setItem("userDetails", JSON.stringify(userDetails))
+    }else if (response.data.message === "Invalid Password/email"){
+      document.getElementById("error-msg").textContent = "Invalid Password/email"
+    }else if(response.data.message === "Please enter required email and password"){
+      document.getElementById("error-msg").textContent = "Please enter required email and password"
+    }
+    else{
+      document.getElementById("error-msg").textContent = "Error while login"
+    }
+
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    
+    
+  }
 
   return (
     <div>
@@ -12,6 +46,7 @@ const Login = (props) => {
               <label>
                 Email:
                 <input
+                  id='email'
                   type="text"
                   placeholder='Enter Your Email'
                   
@@ -20,13 +55,15 @@ const Login = (props) => {
               <label>
                 Password:
                 <input
+                  id='password'
                   type="password"
                   placeholder='Enter Your Password'
                   
                 />
               </label>
+              <center><p id="error-msg"></p></center>
               <div className="button-container">
-                <button type="submit">Submit</button>
+                <button type="submit" onClick={getLogin}>Submit</button>
                 <button type="button" onClick={CancelLogin}>
                   Cancel
                 </button>
