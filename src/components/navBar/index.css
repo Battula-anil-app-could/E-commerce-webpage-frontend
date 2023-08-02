@@ -1,0 +1,87 @@
+.bg-conti{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    min-width: 100vw;
+}
+#imag {
+    width: 100px;
+    height: 80px;
+    border: 0px solid;
+    border-radius: 50%;
+}
+@media (max-width: 720px){
+    #imag{
+       max-width: 50px;
+       max-height: 50px;
+       border-radius: 60%;
+
+    }
+}
+
+.option {
+    font-family: Roboto;
+    font-weight: bold;
+    color: #323f4b;
+}
+
+
+#search-bar-card{
+    width: 60%;
+    height: 40px;
+    background-color: rgb(212, 214, 214);
+    display: flex;
+    align-items: center;
+    border: 0px solid;
+    border-radius: 5px;
+}
+#search-bar{
+    min-height: 100%;
+    width: 95%;
+    border: 0px none;
+}
+#category{
+    width: 2%;
+    min-height: 100%;
+    border: 0px none;
+}
+
+#search-btn{
+    height: 100%;
+    width: 5%;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+.loged-btns{
+    border: 1px solid white;
+    background-color: transparent;
+    border-radius: 3px;
+    color: white;
+}
+.login-btn-li{
+    position: relative;
+}
+.profile-card{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-btn{
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    border: 0px solid; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+}
+.cart-png{
+    width: 100%;
+    height: 70%;
+}
