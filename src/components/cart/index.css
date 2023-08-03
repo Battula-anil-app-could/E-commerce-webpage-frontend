@@ -1,0 +1,40 @@
+
+ .cart-container {
+    overflow-y: auto;
+    height: 100vh;
+    padding-bottom: 10%;
+    margin-top: 8%;
+   
+  }
+   
+  .cart-title {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .empty-cart-message {
+    margin-top: 0;
+    color: #777;
+  }
+  
+  .total-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+  }
+  
+  @media (max-width: 768px) {
+    .cart-container {
+      padding: 10px;
+    }
+  
+    .buy-button {
+      font-size: 14px;
+    }
+  
+    .item-image img {
+      width: 70px;
+      height: 70px;
+    }
+  } 
+  

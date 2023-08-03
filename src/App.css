@@ -6,4 +6,7 @@
      
 }
 
-
+#main-card{
+    position: relative;
+    padding: 2%;
+}

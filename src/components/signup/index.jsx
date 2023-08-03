@@ -54,7 +54,7 @@ const Signup = (props) => {
             
              setTimeout(() => {
                 cancelSignUp()
-            }, 2000);
+            }, 1000);
             
         }
     }else{
@@ -83,6 +83,7 @@ const Signup = (props) => {
                   id='name'
                   type="text"
                   placeholder='Enter Your Full Name'
+                  required
                   
                 />
               </label>
@@ -92,6 +93,7 @@ const Signup = (props) => {
                   id='number'
                   type="text"
                   placeholder='Enter Your number'
+                  required
                   
                 />
               </label>

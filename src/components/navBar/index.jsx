@@ -1,48 +1,81 @@
-import { useEffect, useState } from "react"
-import Login from "../login/index"
-import Signup from '../signup/index'
-import "./index.css"
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Login from "../login/index";
+import Signup from "../signup/index";
+import "./index.css";
 
-const NavBAr = () => {
-    
-    const [isLogin, setisLogin] = useState(false)
-    const [isClickedSignup, setisClickedSignup] = useState(false)
-    const [isLoginClicked, setisLoginClicked] = useState(false)
-    const goToLogin = () => {
-        setisLoginClicked(true)
-        setisClickedSignup(false)
-    }
-    
-    useEffect(() => {
-        let user = JSON.parse(localStorage.getItem("userDetails"));
-        console.log(user)
-        if (user !== null){
-            setisLogin(true)  
-        }
-        }
-    )
-    
-    const loginSuccess = () => {
-        setisLogin(true)
-    }
-    const CancelLogin = () => {
-        setisLoginClicked(false)   
-    }
+const NavBAr = (props) => {
+  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart } = props;
 
-    const LogOutOff = () =>{
-        localStorage.removeItem("userDetails")
-        setisLogin(false)
-        setisLoginClicked(false)
-    }
+  const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
+  const [isClickedSignup, setisClickedSignup] = useState(false);
+  const [isLoginClicked, setisLoginClicked] = useState(false);
 
-    const clickedSingup = () => {
-        setisClickedSignup(true)
-        setisLoginClicked(false)
-    }
+  const goToLogin = () => {
+    setisLoginClicked(true);
+    setisClickedSignup(false);
+  };
 
-    const cancelSignUp = () => {
-        setisClickedSignup(false)
+  const loginSuccess = async () => {
+    if (productLis !== []) {
+      let userId = JSON.parse(localStorage.getItem("userDetails")).id;
+      let response = await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/cartItems/cart?userId=${userId}`);
+      let productsWithCartItems;
+
+      if (response.data.message === "Success") {
+        let productsIds = response.data.products.map((eachId) => eachId.product_id);
+        let productsInUserCart = productLis.filter((eachProduct) => productsIds.includes(eachProduct.product_id));
+
+        productsWithCartItems = productLis.map((eachProduct) => ({
+          ...eachProduct,
+          cartItem: productsIds.includes(eachProduct.product_id),
+        }));
+
+        localStorage.setItem("productsInCart", JSON.stringify(productsInUserCart));
+        await filterCartProductsInHome(productsWithCartItems);
+        setisLogin(true);
+      }
     }
+  };
+
+  useEffect(() => {
+    let user = JSON.parse(localStorage.getItem("userDetails"));
+
+    const fun = async () => {
+      if (user !== null) {
+        await loginSuccess();
+        setisLogin(true);
+      }
+    };
+
+    fun();
+  }, []);
+
+  const CancelLogin = () => {
+    setisLoginClicked(false);
+  };
+
+  const LogOutOff = () => {
+    localStorage.removeItem("userDetails");
+    localStorage.removeItem("productsInCart");
+    let planeProducts = productLis.map((eachOne) => ({
+      ...eachOne,
+      cartItem: false,
+    }));
+    filterCartProductsInHome(planeProducts);
+    setisLogin(false);
+    setisLoginClicked(false);
+  };
+
+  const clickedSingup = () => {
+    setisClickedSignup(true);
+    setisLoginClicked(false);
+  };
+
+  const cancelSignUp = () => {
+    setisClickedSignup(false);
+  };
+
 
     return(
         <div className="bg-conti">
@@ -56,7 +89,7 @@ const NavBAr = () => {
                             </div>
                               
                           </a>
-                          <div id="search-bar-card">
+                          <form id="search-bar-card">
                             <select id='category'>
                               <option value=""></option>
                               <option value="Clothing" className="p-3 m-5 mr-3 ml-3">clothing</option>
@@ -67,7 +100,7 @@ const NavBAr = () => {
                             <button id="search-btn">
                                 <i className="fa-solid fa-magnifying-glass" id="search-icon"></i>
                             </button>
-                          </div>
+                          </form>
                           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                               <span className="navbar-toggler-icon"></span>
                           </button>
@@ -79,10 +112,11 @@ const NavBAr = () => {
                                 </li>}
                                 {!isLogin && <li className="nav-item login-btn-li">
                                     <button className="nav-link option loged-btns p-2 m-2 text-white" onClick={goToLogin}>Login</button>
-                                    {isLoginClicked && <Login CancelLogin = {CancelLogin} loginSuccess={loginSuccess}/>}
+                                    {isLoginClicked && <Login CancelLogin = {CancelLogin} loginSuccess={loginSuccess} />}
                                 </li>}
-                                {isLogin && <li className="nav-item  profile-card ">
-                                    <button className="profile-btn mr-3 ">
+                                {isLogin && <li className="nav-item  profile-card-for-cart ">
+                                    <p id="cart-items-count">{itemsCoubtInCart}</p>
+                                    <button className="profile-btn mr-3 " onClick={letGotoCart}>
                                         <img src="https://www.freeiconspng.com/uploads/silver-shopping-cart-icon-14.png" className="cart-png" alt="cart" />
                                     </button>
                                     </li>}

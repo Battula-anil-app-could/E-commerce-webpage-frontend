@@ -1,3 +1,7 @@
+
+button:focus{
+    outline: none !important;
+}
 .bg-conti{
     position: fixed;
     top: 0;
@@ -104,9 +108,25 @@
     overflow: hidden; 
     background-color:transparent;
 }
+.profile-btn:focus{
+    outline: none;
+}
 .cart-png{
     width: 100px;
     height: 50px;
+}
+.profile-card-for-cart{
+    position: relative;
+    display: inline-block;
+}
+#cart-items-count{
+    position: absolute;
+    top: 0px; 
+    font-weight: bold;
+    left: 18px; 
+    color: #fcf9fb; 
+    font-size: 28px; 
+    font-family: Arial, sans-serif;
 }
 #profile-png{
     border: 0px solid;

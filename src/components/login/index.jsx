@@ -14,14 +14,15 @@ const Login = (props) => {
     const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/login", params.toString());
     //console.log(response.data);
     if (response.data.message === "User Checking Success"){
-      loginSuccess()
       const userDetails = {
-        id: response.data.message,
+        id: response.data.user_id,
         name: response.data.user_name,
         email: response.data.email,
         adderss: response.data.adderss
       }
       localStorage.setItem("userDetails", JSON.stringify(userDetails))
+      await loginSuccess()
+      
     }else if (response.data.message === "Invalid Password/email"){
       document.getElementById("error-msg").textContent = "Invalid Password/email"
     }else if(response.data.message === "Please enter required email and password"){
