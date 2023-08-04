@@ -49,6 +49,7 @@ class App extends React.Component{
   
 
   filterCartProductsInHome = (productsWithCartItems) => {
+    //console.log(productsWithCartItems)
     this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
   }
 
@@ -99,8 +100,18 @@ class App extends React.Component{
   }
 
   updateItemsInCart = () => {
+    //console.log("called updated")
     let countOfCart = JSON.parse(localStorage.getItem("productsInCart")).length
     this.setState({itemsCoubtInCart: countOfCart})
+  }
+
+  updateQuantity = (productId, quantityValue) =>{
+    const {productLis} = this.state
+    let product = productLis.filter(p => p.product_id === productId)[0]
+    product['quantity'] = quantityValue;
+    product['price'] = product['price'] * quantityValue
+    console.log(product)
+    this.setState({productLis: productLis})
   }
 
   letAddToCart = async (productId) =>{
@@ -133,14 +144,9 @@ class App extends React.Component{
     product['cartItem'] = false
     const user = JSON.parse(localStorage.getItem("userDetails"));
     const userId = user.id
-    let params = new URLSearchParams();
-    params.append("productId", productId);
-    params.append("userId", userId);
-    console.log(userId)
-    console.log(productId)
-    let response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/removeFromCart/cart?userId=${4}&productId=${1}`)
-    console.log(response.data)
-    if(response.data.message === "Success"){   
+    let response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/removeFromCart/cart?userId=${userId}&productId=${productId}`)
+    //console.log(response)
+    if(response.data.message === "Success"){  
         this.updateItemsInCart()
       }
    }
@@ -153,8 +159,7 @@ class App extends React.Component{
     const {productLis, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts} = this.state;
     //isGetProducts&&console.log(productLis)
     return(
-      <>
-         <div className='mb-3' id='main-card'>
+        <div className='mb-3'  id='main-card'>
           {isGetProducts && <NavBAr 
           productLis = {productLis} 
           filterCartProductsInHome={this.filterCartProductsInHome}
@@ -163,22 +168,24 @@ class App extends React.Component{
           backToHomePage = {this.backToHomePage}
           />}
           {!isGetProducts&&<NavBAr />}
-          {!isClickOnGotocartOrProductDetails?<div id="product-listing" className="mb-3">
+          {!isClickOnGotocartOrProductDetails?<div className='products-card'>
             <h2>Featured Products</h2>
-            <div className="products">
-              {productLis.map((product) => (
-                <Product
-                  key={product.product_id}
-                  product={product}
-                  letGotoCart={this.letGotoCart}
-                  letAddToCart={this.letAddToCart}
-                  handleProductClick = {this.handleProductClick}
-                />
-              ))}
-            </div>
-          </div>:!selectedProduct?<Cart 
+              <div className="products">
+                {productLis.map((product) => (
+                  <Product
+                    key={product.product_id}
+                    product={product}
+                    letGotoCart={this.letGotoCart}
+                    letAddToCart={this.letAddToCart}
+                    handleProductClick = {this.handleProductClick}
+                  />
+                ))}
+              </div>
+          </div>:!selectedProduct?<Cart
+            productLis = {productLis} 
             backToHomePage={this.backToHomePage} 
             removeItemFromCart = {this.removeItemFromCart}
+            updateQuantity = {this.updateQuantity}
             />: <div id="product-listing">
             <ProductDetails
               product={selectedProduct}
@@ -187,11 +194,9 @@ class App extends React.Component{
               letAddToCart={this.letAddToCart}
               handleProductClick = {this.handleProductClick}
             />  
-          </div>} 
-          
-        
-          </div>
-      </>
+          </div>}  
+        </div>
+
 
      
     )

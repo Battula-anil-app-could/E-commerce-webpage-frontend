@@ -24,11 +24,13 @@ const NavBAr = (props) => {
 
       if (response.data.message === "Success") {
         let productsIds = response.data.products.map((eachId) => eachId.product_id);
+       // console.log(response.data.products)
         let productsInUserCart = productLis.filter((eachProduct) => productsIds.includes(eachProduct.product_id));
 
         productsWithCartItems = productLis.map((eachProduct) => ({
           ...eachProduct,
           cartItem: productsIds.includes(eachProduct.product_id),
+          quantity: productsIds.includes(eachProduct.product_id)?response.data.products.filter((eachOne) => eachProduct.product_id === eachOne.product_id)[0]['quantity']:0
         }));
 
         localStorage.setItem("productsInCart", JSON.stringify(productsInUserCart));
@@ -40,7 +42,6 @@ const NavBAr = (props) => {
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem("userDetails"));
-
     const fun = async () => {
       if (user !== null) {
         await loginSuccess();
@@ -86,13 +87,13 @@ const NavBAr = (props) => {
                               
                           </a>
                           <form id="search-bar-card">
-                            <select id='category'>
+                            <select id='category' onChange={(e) => {document.getElementById("search-bar").value = e.target.value}}>
                               <option value=""></option>
                               <option value="Clothing" className="p-3 m-5 mr-3 ml-3">clothing</option>
                               <option value="Grocery Items" className="p-3 m-5 mr-3 ml-3">Grocery Items</option>
                               <option value="Electronices" className="p-3 m-5 mr-3 ml-3">Electronices</option>
                             </select>
-                            <input type='text' id = "search-bar" placeholder='Search for products'/>
+                            <input type='text' id = "search-bar" placeholder='Search for products' className="pl-3"/>
                             <button id="search-btn">
                                 <i className="fa-solid fa-magnifying-glass" id="search-icon"></i>
                             </button>

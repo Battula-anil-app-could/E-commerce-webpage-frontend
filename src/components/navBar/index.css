@@ -9,6 +9,9 @@ button:focus{
     z-index: 100;
     min-width: 100vw;
 }
+select:focus{
+    outline: none !important;
+}
 .logo{
     width: 80px;
     height: 80px;
@@ -53,6 +56,9 @@ button:focus{
     width: 95%;
     border: 0px none;
 }
+#search-bar:focus{
+    outline: none !important;
+}
 
 #category{
     width: 2%;
@@ -69,6 +75,9 @@ button:focus{
     align-items: center;
     justify-content: center;
     flex-wrap: nowrap;
+}
+#search-btn:focus{
+    outline: none !important;
 }
 @media (max-width: 720px){
     #search-bar{

@@ -1,8 +1,8 @@
-
+import {useState} from "react"
 import "./index.css"; 
 
-const CartItem = ({ product, updateQuantity, removeItem }) => {
-  
+const CartItem = ({ product, removeItem,updateQuantity }) => {
+
   return (
     <div className="cart-item-container">
       <div className="item-image">
@@ -12,10 +12,10 @@ const CartItem = ({ product, updateQuantity, removeItem }) => {
         <h3 className="item-name">{product.name}</h3>
         <p className="item-description">{product.description}</p>
         <div className="item-controls">
-          <span className="item-price">${product.price.toFixed(2)}</span>
+          <span className="item-price">&#x20B9;{product.price.toFixed(2)}</span>
           <select
             className="quantity-select"
-            value={1}
+            value={product.quantity}
             onChange={(e) => updateQuantity(product.product_id, e.target.value)}
           >
             {Array.from({ length: 10 }, (_, index) => index + 1).map((quantity) => (
