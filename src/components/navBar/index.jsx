@@ -5,7 +5,7 @@ import Signup from "../signup/index";
 import "./index.css";
 
 const NavBAr = (props) => {
-  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart } = props;
+  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage } = props;
 
   const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
   const [isClickedSignup, setisClickedSignup] = useState(false);
@@ -58,11 +58,7 @@ const NavBAr = (props) => {
   const LogOutOff = () => {
     localStorage.removeItem("userDetails");
     localStorage.removeItem("productsInCart");
-    let planeProducts = productLis.map((eachOne) => ({
-      ...eachOne,
-      cartItem: false,
-    }));
-    filterCartProductsInHome(planeProducts);
+    backToHomePage()
     setisLogin(false);
     setisLoginClicked(false);
   };
@@ -84,7 +80,7 @@ const NavBAr = (props) => {
                   <div className="col-12">
                       <nav className="navbar navbar-expand-lg navbar-light bg-primary container-fulid text-white">
                           <a className="navbar-brand" href="#">
-                            <div className="logo">
+                            <div className="logo" onClick={backToHomePage}>
                             <img src="https://logo.com/image-cdn/images/kts928pd/production/396f6f3c7f506eb9674c2a6e244249faeda83b00-424x419.png?w=1080&q=72" id="imag" alt='webpage'/>
                             </div>
                               
