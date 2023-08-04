@@ -95,14 +95,39 @@ class App extends React.Component{
     });
   };
 
-  letGotoCart = () => {
-    this.setState({isClickOnGotocartOrProductDetails: true, selectedProduct: false})
-  }
-
   updateItemsInCart = () => {
     //console.log("called updated")
     let countOfCart = JSON.parse(localStorage.getItem("productsInCart")).length
     this.setState({itemsCoubtInCart: countOfCart})
+  }
+
+  letAddToCart = async (productId) =>{
+    //console.log(product['cartItem'])
+    const user = JSON.parse(localStorage.getItem("userDetails"));
+    if (user !== null){
+      const {productLis} = this.state
+      let product = productLis.filter(p => p.product_id === productId)[0]
+      product['cartItem'] = true
+      product['quantity'] = 1
+      //console.log(productLis)
+      const userId = user.id
+      let params = new URLSearchParams();
+      params.append("productId", product.product_id);
+      params.append("userId", userId);
+      let response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/Cart", params.toString())
+      if(response.data.message === "Success"){   
+          let productsInCart = JSON.parse(localStorage.getItem("productsInCart")) || [];;
+          if(productsInCart !== null){
+              let  newproductsInCart = [...productsInCart, product]
+              localStorage.setItem("productsInCart", JSON.stringify(newproductsInCart));
+          }
+          this.updateItemsInCart(productLis)
+        }
+    }
+    
+  }
+  letGotoCart = () => {
+    this.setState({isClickOnGotocartOrProductDetails: true, selectedProduct: false})
   }
 
   updateQuantity = (productId, quantityValue) =>{
@@ -114,37 +139,13 @@ class App extends React.Component{
     this.setState({productLis: productLis})
   }
 
-  letAddToCart = async (productId) =>{
-    //console.log(product['cartItem'])
-    const user = JSON.parse(localStorage.getItem("userDetails"));
-    if (user !== null){
-      const {productLis} = this.state
-      let product = productLis.filter(p => p.product_id === productId)[0]
-      product['cartItem'] = true
-      const userId = user.id
-      let params = new URLSearchParams();
-      params.append("productId", product.product_id);
-      params.append("userId", userId);
-      let response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/addToCart", params.toString())
-      if(response.data.message === "Success"){   
-          let productsInCart = JSON.parse(localStorage.getItem("productsInCart")) || [];;
-          if(productsInCart !== null){
-              let  newproductsInCart = [...productsInCart, product]
-              localStorage.setItem("productsInCart", JSON.stringify(newproductsInCart));
-          }
-          this.updateItemsInCart()
-        }
-    }
-    
-  }
-
   removeItemFromCart = async(productId) => {
     const {productLis} = this.state
     let product = productLis.filter(p => p.product_id === productId)[0]
     product['cartItem'] = false
     const user = JSON.parse(localStorage.getItem("userDetails"));
     const userId = user.id
-    let response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/removeFromCart/cart?userId=${userId}&productId=${productId}`)
+    let response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/Cart/user?userId=${userId}&productId=${productId}`)
     //console.log(response)
     if(response.data.message === "Success"){  
         this.updateItemsInCart()

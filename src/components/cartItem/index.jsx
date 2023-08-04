@@ -1,8 +1,6 @@
-import {useState} from "react"
 import "./index.css"; 
 
 const CartItem = ({ product, removeItem,updateQuantity }) => {
-
   return (
     <div className="cart-item-container">
       <div className="item-image">

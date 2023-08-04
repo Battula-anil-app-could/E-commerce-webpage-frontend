@@ -8,7 +8,6 @@
 
 #main-card{
     position: relative;
-    padding: 2%;
     background-color:  whitesmoke;
     overflow-y: auto;
     height: 100vh;

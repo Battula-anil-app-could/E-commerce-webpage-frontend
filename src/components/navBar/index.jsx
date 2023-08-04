@@ -25,13 +25,13 @@ const NavBAr = (props) => {
       if (response.data.message === "Success") {
         let productsIds = response.data.products.map((eachId) => eachId.product_id);
        // console.log(response.data.products)
-        let productsInUserCart = productLis.filter((eachProduct) => productsIds.includes(eachProduct.product_id));
-
         productsWithCartItems = productLis.map((eachProduct) => ({
           ...eachProduct,
           cartItem: productsIds.includes(eachProduct.product_id),
           quantity: productsIds.includes(eachProduct.product_id)?response.data.products.filter((eachOne) => eachProduct.product_id === eachOne.product_id)[0]['quantity']:0
         }));
+
+        let productsInUserCart = productsWithCartItems.filter((eachProduct) => productsIds.includes(eachProduct.product_id));
 
         localStorage.setItem("productsInCart", JSON.stringify(productsInUserCart));
         await filterCartProductsInHome(productsWithCartItems);
@@ -80,12 +80,11 @@ const NavBAr = (props) => {
             <div className="row">
                   <div className="col-12">
                       <nav className="navbar navbar-expand-lg navbar-light bg-primary container-fulid text-white">
-                          <a className="navbar-brand" href="#">
+                          <div className="navbar-brand">
                             <div className="logo" onClick={backToHomePage}>
                             <img src="https://logo.com/image-cdn/images/kts928pd/production/396f6f3c7f506eb9674c2a6e244249faeda83b00-424x419.png?w=1080&q=72" id="imag" alt='webpage'/>
-                            </div>
-                              
-                          </a>
+                            </div>     
+                          </div>
                           <form id="search-bar-card">
                             <select id='category' onChange={(e) => {document.getElementById("search-bar").value = e.target.value}}>
                               <option value=""></option>
