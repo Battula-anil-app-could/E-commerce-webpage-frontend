@@ -18,7 +18,8 @@ const Login = (props) => {
         id: response.data.user_id,
         name: response.data.user_name,
         email: response.data.email,
-        adderss: response.data.adderss
+        adderss: response.data.adderss, 
+        mobileNumber: response.data.Number
       }
       localStorage.setItem("userDetails", JSON.stringify(userDetails))
       await loginSuccess()

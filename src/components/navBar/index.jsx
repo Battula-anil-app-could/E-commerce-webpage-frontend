@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Login from "../login/index";
 import Signup from "../signup/index";
+import ProfileCard from "../profile/index"
 import "./index.css";
 
 const NavBAr = (props) => {
@@ -10,6 +11,7 @@ const NavBAr = (props) => {
   const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
   const [isClickedSignup, setisClickedSignup] = useState(false);
   const [isLoginClicked, setisLoginClicked] = useState(false);
+  const [isClikedProfile, setisClickedProfile] = useState(false)
 
   const goToLogin = () => {
     setisLoginClicked(true);
@@ -79,7 +81,11 @@ const NavBAr = (props) => {
     setisClickedSignup(false);
   };
 
-
+  const profileClicked = () => {
+    setisClickedProfile(prevSatte => !prevSatte)
+    console.log("cliked profile")
+  }
+  console.log(isClikedProfile)
     return(
         <div className="bg-conti">
         <div className="container-fulid">
@@ -122,10 +128,11 @@ const NavBAr = (props) => {
                                         <img src="https://www.freeiconspng.com/uploads/silver-shopping-cart-icon-14.png" className="cart-png" alt="cart" />
                                     </button>
                                     </li>}
-                                {isLogin && <li className="nav-item  profile-card mr-3">
-                                    <button className="profile-btn ">
+                                {isLogin && <li className="nav-item profile-card-for-cart mr-3">
+                                    <button className="profile-btn" onClick={profileClicked}>
                                         <img src="https://i.pinimg.com/1200x/26/61/9c/26619c16b5451afaa95956dff93ae3e5.jpg" id="profile-png" alt="profile" />
                                     </button>
+                                    {isClikedProfile && <ProfileCard />}
                                     </li>
                                 }
                                 {isLogin && <li className="nav-item">

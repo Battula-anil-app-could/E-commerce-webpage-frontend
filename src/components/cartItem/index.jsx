@@ -22,10 +22,11 @@ const CartItem = ({ product, removeItem,updateQuantity, buyItemFromCArt}) => {
               </option>
             ))}
           </select>
+          <div className="btns">
           <button className="buy-button" onClick={() => {buyItemFromCArt(product)}}>Buy</button>
-          <button className="remove-button" onClick={() => {removeItem(product.product_id)}}> 
-            Remove
-          </button>
+          <button className="remove-button" onClick={() => {removeItem(product.product_id)}}> Remove</button>
+          </div>
+          
         </div>
       </div>
     </div>

@@ -2,6 +2,14 @@ import React, {useRef}from 'react';
 import './index.css';
 
 const Order = ({itemsForBuying, handleCancel, removeItem}) => {
+    itemsForBuying.map(eachItem => {
+        if (eachItem['quantity'] === 0){
+            eachItem['quantity'] = 1
+            return eachItem
+        }else{
+            return eachItem
+        }
+    })
     const totalItems = itemsForBuying.reduce((total, item) => total + item.quantity, 0)
     const totalPrice = itemsForBuying.reduce((total, item) => total + item.price * item.quantity, 0);
     const discount = 5;

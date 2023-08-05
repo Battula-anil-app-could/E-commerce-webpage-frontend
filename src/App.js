@@ -8,7 +8,6 @@ import "./App.css"
 import axios from 'axios';
 class App extends React.Component{
   
-
   state = {
     productLis: [], 
     isGetProducts: false, 
@@ -59,7 +58,7 @@ class App extends React.Component{
     const user = JSON.parse(localStorage.getItem("userDetails"));
     if (user === null){
       const {productLis} = this.state
-      console.log("working backHome function")
+      //console.log("working backHome function")
       let planeProducts = productLis.map((eachOne) => ({
         ...eachOne,
         cartItem: false,
