@@ -44,6 +44,11 @@ const Cart = (props) => {
   }
 
   const buyTotalItemsInCart = () =>{
+    setitemsForBuying(JSON.parse(localStorage.getItem("productsInCart")))
+    setisOredrClicked(true)
+  }
+  const buyItemFromCArt = (product) =>{
+    setitemsForBuying([product])
     setisOredrClicked(true)
   }
   const handleCancel = () => {
@@ -55,7 +60,7 @@ const Cart = (props) => {
   }, 0);
   //console.log(totalPrice)
   return (
-    <div className="cart-container ">
+    <div className="cart-container ml-3">
       <h2 className="cart-title">Cart</h2>
       {cartItems.length === 0 ? (
         <>
@@ -72,6 +77,7 @@ const Cart = (props) => {
               product={product}
               updateQuantity={updateQuantity}
               removeItem={removeItem}
+              buyItemFromCArt = {buyItemFromCArt}
             />
           ))}
           <div className="item-summery-card ">
@@ -84,6 +90,7 @@ const Cart = (props) => {
       {isOredrClicked&&<Order 
       itemsForBuying={itemsForBuying}
       handleCancel={handleCancel}
+      removeItem = {removeItem}
       />}
     </div>
     

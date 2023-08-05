@@ -1,6 +1,6 @@
 import "./index.css"; 
 
-const CartItem = ({ product, removeItem,updateQuantity }) => {
+const CartItem = ({ product, removeItem,updateQuantity, buyItemFromCArt}) => {
   return (
     <div className="cart-item-container">
       <div className="item-image">
@@ -22,9 +22,7 @@ const CartItem = ({ product, removeItem,updateQuantity }) => {
               </option>
             ))}
           </select>
-          <button className="buy-button" >
-            Buy
-          </button>
+          <button className="buy-button" onClick={() => {buyItemFromCArt(product)}}>Buy</button>
           <button className="remove-button" onClick={() => {removeItem(product.product_id)}}> 
             Remove
           </button>

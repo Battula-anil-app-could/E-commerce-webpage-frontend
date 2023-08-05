@@ -2,14 +2,13 @@
     position: absolute;
     min-width: 100vw;
     background-color: rgba(0, 0, 0, 0.349);
-    min-height: 100vh;
+    min-height: 100%;
     top: 0;
     left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0px;
-    min-width: 100vw;
 }
 .order-card {
     background-color: #f9f9f9f5;

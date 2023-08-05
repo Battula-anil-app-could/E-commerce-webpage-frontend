@@ -15,7 +15,9 @@ class App extends React.Component{
     isClickOnGotocartOrProductDetails:false, 
     itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,
     selectedProduct: false,
-    similarProducts: []
+    similarProducts: [],
+    searchProducts: [],
+    isClickSearchBtn: false
   }
  
 
@@ -62,28 +64,46 @@ class App extends React.Component{
         ...eachOne,
         cartItem: false,
       }));
-      this.setState({isClickOnGotocartOrProductDetails: false, productLis: planeProducts })
+      this.setState({isClickOnGotocartOrProductDetails: false, productLis: planeProducts, isClickSearchBtn:false })
     }else{
-      this.setState({isClickOnGotocartOrProductDetails: false})
+      this.setState({isClickOnGotocartOrProductDetails: false, isClickSearchBtn:false})
     }
     
   }
  
-  productsData = async () => {
-    const response = await axios.get("http://localhost:8083/e-commerces-backend/backend.php/products");
-    let products = response.data.map(eachOne => {
-      eachOne['cartItem'] = false;
-      return eachOne;
-    });
-    
-    this.setState({ productLis: products, isGetProducts: true });
+  productsData = async (userInput = "") => {
+    const response = await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/products/product?userInput=${userInput}`);
+    // console.log(response.data)
+    // console.log(userInput);
+    try{
+      let products = response.data.map(eachOne => {
+        eachOne['cartItem'] = false;
+        return eachOne;
+      });
+      if (userInput !== ""){
+        let productsIdsInCart = JSON.parse(localStorage.getItem("productsInCart"))?JSON.parse(localStorage.getItem("productsInCart")).map(eachOne => eachOne.product_id):null;
+        if (productsIdsInCart !== null){
+          //console.log(productsIdsInCart)
+          let productsInCart = products.map(eachOne => {
+            eachOne['cartItem'] = productsIdsInCart.includes(eachOne.product_id);
+            return eachOne;
+          });
+          this.setState({searchProducts: productsInCart, isGetProducts: true, isClickSearchBtn:true});
+        }
+        this.setState({searchProducts: products, isGetProducts: true, isClickSearchBtn:true});
+      }else{
+        this.setState({ productLis: products, isGetProducts: true, isClickSearchBtn:false, searchProducts:[]});
+      }
+      
+    }catch(err){
+      this.setState({isGetProducts: true, isClickSearchBtn:false });
+    }
+   
     
   }
   
-  handleProductClick = (productId) => {
+  handleProductClick = (product) => {
     const {productLis} = this.state
-    let product = productLis.filter(p => p.product_id === productId)[0]
-    //console.log(product)
     const similarProducts = productLis.filter(
       (p) => p.category === product['category'] && p.product_id !== product['product_id']
     );
@@ -101,12 +121,11 @@ class App extends React.Component{
     this.setState({itemsCoubtInCart: countOfCart})
   }
 
-  letAddToCart = async (productId) =>{
+  letAddToCart = async (product) =>{
     //console.log(product['cartItem'])
     const user = JSON.parse(localStorage.getItem("userDetails"));
     if (user !== null){
       const {productLis} = this.state
-      let product = productLis.filter(p => p.product_id === productId)[0]
       product['cartItem'] = true
       product['quantity'] = 1
       //console.log(productLis)
@@ -157,45 +176,56 @@ class App extends React.Component{
   }
 
   render(){
-    const {productLis, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts} = this.state;
+    const {productLis, isClickSearchBtn, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts, searchProducts} = this.state;
     //isGetProducts&&console.log(productLis)
+    let renderProducts;
+    if (isClickSearchBtn === false){
+      renderProducts = productLis
+    }else{
+      renderProducts = searchProducts
+    }
     return(
         <div className='mb-3'  id='main-card'>
           {isGetProducts && <NavBAr 
-          productLis = {productLis} 
-          filterCartProductsInHome={this.filterCartProductsInHome}
-          itemsCoubtInCart = {itemsCoubtInCart}
-          letGotoCart = {this.letGotoCart}
-          backToHomePage = {this.backToHomePage}
+            productLis = {productLis} 
+            filterCartProductsInHome={this.filterCartProductsInHome}
+            itemsCoubtInCart = {itemsCoubtInCart}
+            letGotoCart = {this.letGotoCart}
+            backToHomePage = {this.backToHomePage}
+            productsData = {this.productsData}
           />}
           {!isGetProducts&&<NavBAr />}
-          {!isClickOnGotocartOrProductDetails?<div className='products-card'>
-            <h2>Featured Products</h2>
-              <div className="products">
-                {productLis.map((product) => (
-                  <Product
-                    key={product.product_id}
-                    product={product}
-                    letGotoCart={this.letGotoCart}
-                    letAddToCart={this.letAddToCart}
-                    handleProductClick = {this.handleProductClick}
-                  />
-                ))}
-              </div>
-          </div>:!selectedProduct?<Cart
-            productLis = {productLis} 
-            backToHomePage={this.backToHomePage} 
-            removeItemFromCart = {this.removeItemFromCart}
-            updateQuantity = {this.updateQuantity}
-            />: <div id="product-listing">
-            <ProductDetails
-              product={selectedProduct}
-              similarProducts={similarProducts}
-              letGotoCart={this.letGotoCart}
-              letAddToCart={this.letAddToCart}
-              handleProductClick = {this.handleProductClick}
-            />  
-          </div>}  
+         <>
+            {!isClickOnGotocartOrProductDetails?<div className='products-card'>
+              <h2>Featured Products</h2>
+                <div className="products">
+                  {renderProducts.map((product) => (
+                    <Product
+                      key={product.product_id}
+                      product={product}
+                      letGotoCart={this.letGotoCart}
+                      letAddToCart={this.letAddToCart}
+                      handleProductClick = {this.handleProductClick}
+                    />
+                  ))}
+                </div>
+            </div>:!selectedProduct?<Cart
+              productLis = {productLis} 
+              backToHomePage={this.backToHomePage} 
+              removeItemFromCart = {this.removeItemFromCart}
+              updateQuantity = {this.updateQuantity}
+              />: <div id="product-listing">
+              <ProductDetails
+                product={selectedProduct}
+                similarProducts={similarProducts}
+                letGotoCart={this.letGotoCart}
+                letAddToCart={this.letAddToCart}
+                handleProductClick = {this.handleProductClick}
+                backToHomePage = {this.backToHomePage}
+                removeItemFromCart = {this.removeItemFromCart}
+              />  
+            </div>}
+          </> 
         </div>
 
 

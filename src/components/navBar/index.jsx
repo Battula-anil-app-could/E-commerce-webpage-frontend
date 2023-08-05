@@ -5,7 +5,7 @@ import Signup from "../signup/index";
 import "./index.css";
 
 const NavBAr = (props) => {
-  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage } = props;
+  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage, productsData } = props;
 
   const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
   const [isClickedSignup, setisClickedSignup] = useState(false);
@@ -15,7 +15,13 @@ const NavBAr = (props) => {
     setisLoginClicked(true);
     setisClickedSignup(false);
   };
-
+  const searchClicked = (event) =>{
+    event.preventDefault();
+    let userInput = document.getElementById("search-bar").value
+    productsData(userInput);
+    backToHomePage()
+    document.getElementById("search-bar").value = "";
+  }
   const loginSuccess = async () => {
     if (productLis !== []) {
       let userId = JSON.parse(localStorage.getItem("userDetails")).id;
@@ -89,11 +95,11 @@ const NavBAr = (props) => {
                             <select id='category' onChange={(e) => {document.getElementById("search-bar").value = e.target.value}}>
                               <option value=""></option>
                               <option value="Clothing" className="p-3 m-5 mr-3 ml-3">clothing</option>
-                              <option value="Grocery Items" className="p-3 m-5 mr-3 ml-3">Grocery Items</option>
-                              <option value="Electronices" className="p-3 m-5 mr-3 ml-3">Electronices</option>
+                              <option value="Grocery" className="p-3 m-5 mr-3 ml-3">Grocery</option>
+                              <option value="Electronics" className="p-3 m-5 mr-3 ml-3">Electronics</option>
                             </select>
                             <input type='text' id = "search-bar" placeholder='Search for products' className="pl-3"/>
-                            <button id="search-btn">
+                            <button id="search-btn" type="submit" onClick={searchClicked}>
                                 <i className="fa-solid fa-magnifying-glass" id="search-icon"></i>
                             </button>
                           </form>

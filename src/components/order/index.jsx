@@ -1,10 +1,10 @@
 import React, {useRef}from 'react';
 import './index.css';
 
-const Order = ({itemsForBuying, handleCancel}) => {
+const Order = ({itemsForBuying, handleCancel, removeItem}) => {
     const totalItems = itemsForBuying.reduce((total, item) => total + item.quantity, 0)
     const totalPrice = itemsForBuying.reduce((total, item) => total + item.price * item.quantity, 0);
-    const discount = 5.0;
+    const discount = 5;
     const savedAmount = (totalPrice * (discount / 100)).toFixed(2);
     const payableAmount = (totalPrice - savedAmount).toFixed(2);
 
@@ -12,10 +12,11 @@ const Order = ({itemsForBuying, handleCancel}) => {
     const upiRef = useRef(null);
     const netPaymentRef = useRef(null);
 
-    const handleProceed = () => {
+    const handleProceed = async() => {
         if (cashOnDeliveryRef.current.checked || upiRef.current.checked || netPaymentRef.current.checked){
             document.getElementById("order-msg").textContent = "Success, Thank You"
             document.getElementById("order-msg").style.color = "#33cc33"
+            itemsForBuying.map(eachItem => removeItem(eachItem.product_id))
             setTimeout(() => {
                 handleCancel()
             }, 2000)
@@ -41,6 +42,10 @@ const Order = ({itemsForBuying, handleCancel}) => {
             </div>
             <div className="order-discount">
                 <div>Discount:</div>
+                <div>5%</div>
+            </div>
+            <div className="order-discount">
+                <div>savedAmount:</div>
                 <div>&#x20B9;{savedAmount}</div>
             </div>
             <div className="order-total">
