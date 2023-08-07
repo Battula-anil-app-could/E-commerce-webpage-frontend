@@ -18,7 +18,7 @@ const ProductDetails = ({ product, similarProducts, letGotoCart, letAddToCart, h
       alert("Please Login")
     }
   }
-
+  //console.log(product['cartItem'])
   const removeItem = (productId) => {
     let oldProductsInCart = JSON.parse(localStorage.getItem("productsInCart"))
     let remaingProductsInCart = oldProductsInCart.filter(eachOne => eachOne.product_id !== productId)

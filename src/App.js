@@ -50,7 +50,30 @@ class App extends React.Component{
 
   filterCartProductsInHome = (productsWithCartItems) => {
     //console.log(productsWithCartItems)
-    this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
+    const {similarProducts, selectedProduct} = this.state 
+    let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
+      let productIds = productsInCart.map(eachOne => eachOne.product_id)
+    if (similarProducts !== []){
+      let updatedSimlarProducts = similarProducts.map(eachItem => {
+        if (productIds.includes(eachItem.product_id)){
+          let itemInCart = productsInCart.filter(eachProduct => eachProduct.product_id === eachItem.product_id)[0]
+          return itemInCart
+        }else{
+          return eachItem
+        }
+      })
+      this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,  similarProducts: updatedSimlarProducts})
+    }else{
+      this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
+    }
+
+    if (selectedProduct !== false){
+      if (productIds.includes(selectedProduct.product_id)){
+        let selectedProductInCart = productsInCart.filter(eachProduct => eachProduct.product_id === selectedProduct.product_id)[0]
+        this.setState({selectedProduct: selectedProductInCart})
+      }
+    }
+    
   }
 
    backToHomePage = () =>{

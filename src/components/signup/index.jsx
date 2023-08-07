@@ -91,7 +91,7 @@ const Signup = (props) => {
                 Mobile Number:
                 <input
                   id='number'
-                  type="text"
+                  type="number"
                   placeholder='Enter Your number'
                   required
                   

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './index.css'; 
+import axios from 'axios';
 
 const ProfileCard = () => {
     const user = JSON.parse(localStorage.getItem("userDetails"))
     const [isClickedEditProfile, setisClickedEditProfile] = useState(false);
     const [profile, setProfile] = useState({
+      id: user.id,
       name: user.name,
-      phoneNumber: user.mobileNumber,
+      mobileNumber: user.mobileNumber,
       adderss: user.adderss,
       email: user.email,
       cartItems: JSON.parse(localStorage.getItem("productsInCart"))?JSON.parse(localStorage.getItem("productsInCart")).length:0,
@@ -16,25 +18,25 @@ const ProfileCard = () => {
     setisClickedEditProfile(true)
   };
 
-  const ChangeProfile = (event) => {
-    event.preventDefault();
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let number = document.getElementById("number").value;
-    let adderss = document.getElementById("adderss").value;
-    if (name !== ""){
-      profile['name'] = name
-    }
-    if (email !== ""){
-      profile['email'] = email
-    }
-    if (number !== ""){
-      profile['phoneNumber'] = number
-    }
-    if (adderss !== ''){
-      profile['adderss'] = adderss
-    }
+  const handleNameChange = (event) => {
+    setProfile({ ...profile, name: event.target.value });
+  };
+  const handleEmailChange = (event) => {
+    setProfile({ ...profile, email: event.target.value });
+  };
+  const handleNumberChange = (event) => {
+    setProfile({ ...profile, phoneNumber: event.target.value });
+  };
+  const handleAdderssChange = (event) => {
+    setProfile({ ...profile, adderss: event.target.value });
+  };
 
+  const ChangeProfile = async (event) => {
+    event.preventDefault();
+    let params = new URLSearchParams();
+    params.append("userDetails", JSON.stringify(profile))
+    let response  = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/users", params.toString())
+    console.log(response)
     localStorage.setItem("userDetails", JSON.stringify(profile))
     setisClickedEditProfile(false)
   }
@@ -43,23 +45,25 @@ const ProfileCard = () => {
     setisClickedEditProfile(false)
     console.log("hihii")
   }
-  console.log(isClickedEditProfile)
+  //console.log(isClickedEditProfile)
   return (
     <div className='profile-bg'>
         {!isClickedEditProfile?<div className="profile-card">
             <h2>{profile.name}</h2>
-            <p><span>Email:</span> {profile.email}</p>
-            <p><span>Phone Number:</span> {profile.phoneNumber}</p>
-            <p><span>Adderss:</span> {profile.adderss}</p>
-            <p><span>Items in Cart:</span> {profile.cartItems}</p>
-            <button className='btn btn-outline-warning mt-3 mb-2' onClick={handleEditProfile}>Edit Profile</button>
+            <p><span className='pr-2'>Email: </span> {profile.email}</p>
+            <p><span className='pr-2'>Phone Number: </span> {profile.mobileNumber}</p>
+            <p><span className='pr-2'>Adderss: </span> {profile.adderss}</p>
+            <p><span className='pr-2'>Items in Cart: </span> {profile.cartItems}</p>
+            <button className='btn btn-outline-warning mt-3 mb-3' onClick={handleEditProfile}>Edit Profile</button>
         </div>:<div className="profile-card">
             <form className='profile-form'>
                 <input
                   id='name'
                   type="text"
                   placeholder='Enter Your Full Name'
+                  value={profile.name || ""}
                   className='p-2'
+                  onChange={handleNameChange}
                   
                 />
                 <input
@@ -67,12 +71,16 @@ const ProfileCard = () => {
                   type="email"
                   placeholder='Enter Your email'
                   className='p-2'
+                  value={profile.email || ""}
+                  onChange={handleEmailChange}
                 />
                 <input
                   id='number'
-                  type="text"
+                  type="number"
                   placeholder='Enter Your number'
                   className='p-2'
+                  value={profile.phoneNumber}
+                  onChange={handleNumberChange}
                   
                 />            
                 <input
@@ -80,6 +88,8 @@ const ProfileCard = () => {
                   type="text"
                   placeholder='Add Your Adderss'
                   className='p-2'
+                  value={profile.adderss || ""}
+                  onChange={handleAdderssChange}
                 />
               <div className="button-container-profile">
                 <button type="submit" className='btn btn-outline-info mt-3 mb-2' onClick={ChangeProfile}>Submit</button>

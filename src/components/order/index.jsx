@@ -3,11 +3,12 @@ import './index.css';
 import axios from 'axios';
 
 const Order = ({itemsForBuying, handleCancel, removeItem}) => {
-    itemsForBuying.map(eachItem => {
-        if (eachItem['quantity'] === 0){
-            eachItem['quantity'] = 1
+    itemsForBuying = itemsForBuying.map(eachItem => {
+        if (eachItem['quantity'] > 0){
             return eachItem
+            
         }else{
+            eachItem['quantity'] = 1
             return eachItem
         }
     })
