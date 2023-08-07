@@ -1,6 +1,5 @@
 import * as React from 'react';
 import  NavBAr from "./components/navBar/index"
-
 import Product from "./components/product/index"
 import Cart from "./components/cart/index"
 import ProductDetails from "./components/productDetails/index"
@@ -141,6 +140,8 @@ class App extends React.Component{
           }
           this.updateItemsInCart(productLis)
         }
+    }else{
+      alert("Please Login")
     }
     
   }

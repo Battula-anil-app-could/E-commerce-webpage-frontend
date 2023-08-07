@@ -27,7 +27,7 @@ const NavBAr = (props) => {
   const loginSuccess = async () => {
     if (productLis !== []) {
       let userId = JSON.parse(localStorage.getItem("userDetails")).id;
-      let response = await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/cartItems/cart?userId=${userId}`);
+      let response = await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/cart/cartItems?userId=${userId}`);
       let productsWithCartItems;
 
       if (response.data.message === "Success") {
@@ -70,6 +70,7 @@ const NavBAr = (props) => {
     backToHomePage()
     setisLogin(false);
     setisLoginClicked(false);
+    setisClickedProfile(false)
   };
 
   const clickedSingup = () => {
@@ -85,7 +86,7 @@ const NavBAr = (props) => {
     setisClickedProfile(prevSatte => !prevSatte)
     console.log("cliked profile")
   }
-  console.log(isClikedProfile)
+  //console.log(isClikedProfile)
     return(
         <div className="bg-conti">
         <div className="container-fulid">

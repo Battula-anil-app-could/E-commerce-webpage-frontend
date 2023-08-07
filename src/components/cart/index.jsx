@@ -55,13 +55,21 @@ const Cart = (props) => {
     setisOredrClicked(false)
   }
 
+  const clearCart = () => {
+    let productsIncart = JSON.parse(localStorage.getItem("productsInCart"))
+    productsIncart.map(eachItem => removeItem(eachItem.product_id))
+  }
+
   const totalPrice = cartItems.reduce((total, item) => {
     return total + item.price * item.quantity;
   }, 0);
   //console.log(totalPrice)
   return (
     <div className="cart-container ml-3">
-      <h2 className="cart-title">Cart</h2>
+      <div className="cart-header">
+        <h2 className="cart-title">Cart</h2>
+        {cartItems.length !== 0 &&<button className="btn btn-outline-danger ml-auto mr-5" onClick={clearCart}><i className="fa-solid fa-trash-can-list"></i>clear</button>}
+      </div>
       {cartItems.length === 0 ? (
         <>
           <p className="empty-cart-message">Cart is empty</p>
@@ -88,9 +96,9 @@ const Cart = (props) => {
         </>
       )}
       {isOredrClicked&&<Order 
-      itemsForBuying={itemsForBuying}
-      handleCancel={handleCancel}
-      removeItem = {removeItem}
+        itemsForBuying={itemsForBuying}
+        handleCancel={handleCancel}
+        removeItem = {removeItem}
       />}
     </div>
     

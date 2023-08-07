@@ -1,5 +1,6 @@
 import React, {useRef}from 'react';
 import './index.css';
+import axios from 'axios';
 
 const Order = ({itemsForBuying, handleCancel, removeItem}) => {
     itemsForBuying.map(eachItem => {
@@ -22,6 +23,12 @@ const Order = ({itemsForBuying, handleCancel, removeItem}) => {
 
     const handleProceed = async() => {
         if (cashOnDeliveryRef.current.checked || upiRef.current.checked || netPaymentRef.current.checked){
+            let user = JSON.parse(localStorage.getItem("userDetails"))
+            let params = new  URLSearchParams();
+            params.append("userId", user.id)
+            params.append("buyingItems", JSON.stringify(itemsForBuying))
+            let response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/order", params.toString())
+            //console.log(response.data)
             document.getElementById("order-msg").textContent = "Success, Thank You"
             document.getElementById("order-msg").style.color = "#33cc33"
             itemsForBuying.map(eachItem => removeItem(eachItem.product_id))

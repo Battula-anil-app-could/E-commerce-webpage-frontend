@@ -24,7 +24,7 @@ const CartItem = ({ product, removeItem,updateQuantity, buyItemFromCArt}) => {
           </select>
           <div className="btns">
           <button className="buy-button" onClick={() => {buyItemFromCArt(product)}}>Buy</button>
-          <button className="remove-button" onClick={() => {removeItem(product.product_id)}}> Remove</button>
+          <button className="remove-button" onClick={() => {removeItem(product.product_id)}}> <i className="fa-solid fa-trash"></i></button>
           </div>
           
         </div>

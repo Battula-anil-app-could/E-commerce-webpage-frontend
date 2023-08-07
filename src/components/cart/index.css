@@ -51,7 +51,10 @@
   border: none;
   cursor: pointer;
 }
-
+.cart-header{
+  display: flex;
+  flex-direction: row;
+}
 .buy-button:hover {
   background-color: #29a329;
 }
