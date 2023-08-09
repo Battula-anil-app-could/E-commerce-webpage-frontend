@@ -3,6 +3,8 @@ import  NavBAr from "./components/navBar/index"
 import Product from "./components/product/index"
 import Cart from "./components/cart/index"
 import ProductDetails from "./components/productDetails/index"
+import AddProduct from "./components/productAdd/index"
+import EditProduct from "./components/productedit/index"
 import "./App.css"
 import axios from 'axios';
 class App extends React.Component{
@@ -15,44 +17,19 @@ class App extends React.Component{
     selectedProduct: false,
     similarProducts: [],
     searchProducts: [],
-    isClickSearchBtn: false
+    isClickSearchBtn: false,
+    addProductForm: false,
+    iseditProductButtonClicked: false,
+    editingProduct: null
   }
  
 
-  // admininsertData = () => {
-  //   const products = [
-  //     {
-  //       id: 1,
-  //       name: "T-Shirt",
-  //       price: 1900.99,
-  //       imageUrl: "https://rukminim2.flixcart.com/image/832/832/xif0q/t-shirt/7/q/w/s-all-rbc-white-one-nb-nicky-boy-original-imagjz5bgpmhcaea.jpeg?q=70",
-  //       description: "A comfortable and stylish t-shirt.",
-  //       category: "Clothing",
-  //     }     
-  //   ];
-
-  //   products.map(async eachOne => {
-  //     const params = new URLSearchParams();
-  //     params.append("name", eachOne.name)
-  //     params.append("price", eachOne.price);
-  //     params.append("imageUrl", eachOne.imageUrl);
-  //     params.append("description", eachOne.description);
-  //     params.append("category", eachOne.category);
-
-  //     const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/insert", params.toString())
-  //     console.log(response.data)
-  //   })
-    
-
-  // }
-  
-  
-
+ 
   filterCartProductsInHome = (productsWithCartItems) => {
     //console.log(productsWithCartItems)
     const {similarProducts, selectedProduct} = this.state 
     let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
-      let productIds = productsInCart.map(eachOne => eachOne.product_id)
+    let productIds = productsInCart.map(eachOne => eachOne.product_id)
     if (similarProducts !== []){
       let updatedSimlarProducts = similarProducts.map(eachItem => {
         if (productIds.includes(eachItem.product_id)){
@@ -76,6 +53,18 @@ class App extends React.Component{
     
   }
 
+  addCartItemsFromLocalStore = (products) => {
+    //console.log(products)
+    let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
+    let productsIds = productsInCart.map(p=>p.product_id)
+    let productsWithCartItems = products.map((eachProduct) => ({
+      ...eachProduct,
+      cartItem: productsIds.includes(eachProduct.product_id),
+      quantity: productsIds.includes(eachProduct.product_id)?productsInCart.filter((eachOne) => eachProduct.product_id === eachOne.product_id)[0]['quantity']:0
+    }));
+    console.log(productsWithCartItems)
+    this.filterCartProductsInHome(productsWithCartItems)
+  }
    backToHomePage = () =>{
     const user = JSON.parse(localStorage.getItem("userDetails"));
     if (user === null){
@@ -117,6 +106,7 @@ class App extends React.Component{
       }
       
     }catch(err){
+      console.log(err)
       this.setState({isGetProducts: true, isClickSearchBtn:false });
     }
    
@@ -197,10 +187,58 @@ class App extends React.Component{
   componentDidMount(){   
     this.productsData()
   }
-
+  showAddProductFrom = () => {
+    this.setState({addProductForm: true})
+  }
+  addProduct = async (userInput = "") => {
+    const response =  await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/products/product?userInput=${userInput}`);
+    let products = response.data.map(eachOne => {
+      eachOne['cartItem'] = false;
+      return eachOne;
+    });
+    this.addCartItemsFromLocalStore(products)
+    this.backToHomePage()
+  }
+  cancelAddProduct = () => {
+    this.setState({addProductForm: false})
+  }
+  deleteProduct = async (productId) => {
+    let {searchProducts} = this.state
+    const response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${productId}`)
+    if (response.data.message === "product Deleted Successfully"){
+      let userInput = ""
+      const response =  await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/products/product?userInput=${userInput}`);
+      let products = response.data.map(eachOne => {
+        eachOne['cartItem'] = false;
+        return eachOne;
+      });
+      if (searchProducts !== []){
+        let filterSearcproducts = searchProducts.filter(p => p.product_id !== productId)
+        this.setState({searchProducts: filterSearcproducts})
+      }
+      this.addCartItemsFromLocalStore(products)
+    }
+  }
+  editProductButtonClicked = async (product) => {
+    //console.log(product)
+    this.setState({iseditProductButtonClicked: true, editingProduct: product})
+  }
+  cancelEditProduct = () => {
+    this.setState({iseditProductButtonClicked: false, editingProduct: null})
+  }
+  isEditproductInDAtaBase = async(product) => {
+    let productId = product.product_id
+    console.log(productId)
+    // const response = await axios.put(`http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${productId}`)
+    // // if (response.data.message === "product Deleted Successfully"){
+    // //   this.productsData()
+    // // }
+    // console.log(response.data)
+  } 
   render(){
-    const {productLis, isClickSearchBtn, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts, searchProducts} = this.state;
-    //isGetProducts&&console.log(productLis)
+    const {productLis,editingProduct, iseditProductButtonClicked, isClickSearchBtn,addProductForm, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts, searchProducts} = this.state;
+    console.log(productLis)
+    console.log("above one is from")
     let renderProducts;
     if (isClickSearchBtn === false){
       renderProducts = productLis
@@ -216,10 +254,11 @@ class App extends React.Component{
             letGotoCart = {this.letGotoCart}
             backToHomePage = {this.backToHomePage}
             productsData = {this.productsData}
+            showAddProductFrom = {this.showAddProductFrom}
           />}
           {!isGetProducts&&<NavBAr />}
          <>
-            {!isClickOnGotocartOrProductDetails?<div className='products-card'>
+           {!isClickOnGotocartOrProductDetails?<div className='products-card'>
               <h2>Featured Products</h2>
                 <div className="products">
                   {renderProducts.map((product) => (
@@ -229,6 +268,8 @@ class App extends React.Component{
                       letGotoCart={this.letGotoCart}
                       letAddToCart={this.letAddToCart}
                       handleProductClick = {this.handleProductClick}
+                      deleteProduct = {this.deleteProduct}
+                      editProductButtonClicked = {this.editProductButtonClicked}
                     />
                   ))}
                 </div>
@@ -246,9 +287,17 @@ class App extends React.Component{
                 handleProductClick = {this.handleProductClick}
                 backToHomePage = {this.backToHomePage}
                 removeItemFromCart = {this.removeItemFromCart}
+                deleteProduct = {this.deleteProduct}
+                editProductButtonClicked = {this.editProductButtonClicked}
               />  
             </div>}
           </> 
+          {addProductForm && <AddProduct cancelAddProduct = {this.cancelAddProduct} addProduct={this.addProduct}/>}
+          {iseditProductButtonClicked&& <EditProduct 
+            editingProduct = {editingProduct}
+            cancelEditProduct = {this.cancelEditProduct}
+            isEditproductInDAtaBase = {this.isEditproductInDAtaBase}
+            />}
         </div>
 
 

@@ -68,6 +68,18 @@ button:focus {
 .addingToCartBtn:hover {
   background-color: #00ff1eac;
 }
+.admin-btns{
+  display: flex;
+  justify-content: space-between;
+}
+.admin-btns button{
+  background-color: transparent;
+  border: none;
+  color: #989998;
+}
+.admin-btns button:hover{
+  color: #252625;
+}
 
 @media (max-width: 600px) {
   .product {

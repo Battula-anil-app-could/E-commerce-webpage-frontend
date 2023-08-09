@@ -3,7 +3,7 @@ import Product from '../product/index'
 import Order from "../order/index"
 import "./index.css"; 
 
-const ProductDetails = ({ product, similarProducts, letGotoCart, letAddToCart, handleProductClick, backToHomePage, removeItemFromCart}) => {
+const ProductDetails = ({ product,editProductButtonClicked, deleteProduct, similarProducts, letGotoCart, letAddToCart, handleProductClick, backToHomePage, removeItemFromCart}) => {
   const [isClickBuyBtnInProductDetails, setisClickBuyBtnInProductDetails] = useState(false)
   const letAddToCarter = () => {
     //console.log("form product cart")
@@ -60,6 +60,8 @@ const ProductDetails = ({ product, similarProducts, letGotoCart, letAddToCart, h
               letGotoCart={letGotoCart}
               letAddToCart={letAddToCart}
               handleProductClick = {handleProductClick}
+              deleteProduct = {deleteProduct}
+              editProductButtonClicked = {editProductButtonClicked}
             />   
             ))}
           </div>

@@ -87,6 +87,11 @@
     display: flex;
     justify-content: space-between;
   }
+  #error-msg{
+    color: red;
+    background: none;
+    border: none;
+  }
   @media (max-width: 768px) {
     .profile-card {
       width: 90%;

@@ -6,7 +6,7 @@ import ProfileCard from "../profile/index"
 import "./index.css";
 
 const NavBAr = (props) => {
-  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage, productsData } = props;
+  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage, productsData, showAddProductFrom } = props;
 
   const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
   const [isClickedSignup, setisClickedSignup] = useState(false);
@@ -25,7 +25,6 @@ const NavBAr = (props) => {
     document.getElementById("search-bar").value = "";
   }
   const loginSuccess = async () => {
-    if (productLis !== []) {
       let userId = JSON.parse(localStorage.getItem("userDetails")).id;
       let response = await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/cart/cartItems?userId=${userId}`);
       let productsWithCartItems;
@@ -43,17 +42,16 @@ const NavBAr = (props) => {
 
         localStorage.setItem("productsInCart", JSON.stringify(productsInUserCart));
         await filterCartProductsInHome(productsWithCartItems);
-        setisLogin(true);
       }
-    }
+      setisLogin(true);
+    
   };
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem("userDetails"));
     const fun = async () => {
       if (user !== null) {
-        await loginSuccess();
-        setisLogin(true);
+        loginSuccess();
       }
     };
 
@@ -84,7 +82,6 @@ const NavBAr = (props) => {
 
   const profileClicked = () => {
     setisClickedProfile(prevSatte => !prevSatte)
-    console.log("cliked profile")
   }
   //console.log(isClikedProfile)
     return(
@@ -122,6 +119,9 @@ const NavBAr = (props) => {
                                 {!isLogin && <li className="nav-item login-btn-li">
                                     <button className="nav-link option loged-btns p-2 m-2 text-white" onClick={goToLogin}>Login</button>
                                     {isLoginClicked && <Login CancelLogin = {CancelLogin} loginSuccess={loginSuccess} />}
+                                </li>}
+                                {isLogin && <li className="nav-item">
+                                    <button className="nav-link option loged-btns p-2 m-2 text-white" onClick={showAddProductFrom}>Add Product</button>
                                 </li>}
                                 {isLogin && <li className="nav-item  profile-card-for-cart ">
                                     <p id="cart-items-count">{itemsCoubtInCart}</p>
