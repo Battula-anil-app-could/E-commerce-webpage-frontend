@@ -8,9 +8,12 @@ const Login = (props) => {
     event.preventDefault();
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
+    let isAdmin = document.getElementById("isAdmin").checked 
+    console.log(isAdmin)
     let params = new URLSearchParams();
     params.append("email", email);
     params.append("password", password);
+
     const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/login", params.toString());
     //console.log(response.data);
     if (response.data.message === "User Checking Success"){
@@ -65,10 +68,14 @@ const Login = (props) => {
               </label>
               <center><p id="error-msg"></p></center>
               <div className="button-container">
-                <button type="submit" onClick={getLogin}>Submit</button>
-                <button type="button" onClick={CancelLogin}>
-                  Cancel
-                </button>
+                <div className="check-box-card">
+                      <label htmlFor="isAdmin" className="pt-2">Admin: </label>
+                    <input type="checkbox" id="isAdmin" /> 
+                </div>
+                <div className="buttons-card">
+                  <button type="submit" onClick={getLogin}>Submit</button>
+                  <button type="button" onClick={CancelLogin}>Cancel</button>
+                </div>
               </div>
             </form>
           </div>

@@ -6,7 +6,7 @@ import ProfileCard from "../profile/index"
 import "./index.css";
 
 const NavBAr = (props) => {
-  const { productLis = [], filterCartProductsInHome = () => {}, itemsCoubtInCart, letGotoCart, backToHomePage, productsData, showAddProductFrom } = props;
+  const { productLis = [], filterCartProductsInHome = () => {}, isAdmin, itemsCoubtInCart, letGotoCart, backToHomePage, productsData, showAddProductFrom } = props;
 
   const [isLogin, setisLogin] = useState(!!localStorage.getItem("userDetails"));
   const [isClickedSignup, setisClickedSignup] = useState(false);
@@ -20,9 +20,14 @@ const NavBAr = (props) => {
   const searchClicked = (event) =>{
     event.preventDefault();
     let userInput = document.getElementById("search-bar").value
-    productsData(userInput);
-    backToHomePage()
-    document.getElementById("search-bar").value = "";
+    //console.log(userInput)
+    if (userInput){
+      productsData(userInput);
+      backToHomePage()
+      document.getElementById("search-bar").value = "";
+      document.getElementById("category").value = ""
+    }
+   
   }
   const loginSuccess = async () => {
       let userId = JSON.parse(localStorage.getItem("userDetails")).id;
@@ -120,7 +125,7 @@ const NavBAr = (props) => {
                                     <button className="nav-link option loged-btns p-2 m-2 text-white" onClick={goToLogin}>Login</button>
                                     {isLoginClicked && <Login CancelLogin = {CancelLogin} loginSuccess={loginSuccess} />}
                                 </li>}
-                                {isLogin && <li className="nav-item">
+                                {isLogin && isAdmin && <li className="nav-item">
                                     <button className="nav-link option loged-btns p-2 m-2 text-white" onClick={showAddProductFrom}>Add Product</button>
                                 </li>}
                                 {isLogin && <li className="nav-item  profile-card-for-cart ">

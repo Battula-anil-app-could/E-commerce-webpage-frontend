@@ -1,12 +1,27 @@
 
 import { useState } from 'react';
+import axios from "axios"
 import './index.css'
 
 const EditProduct = ({editingProduct, cancelEditProduct, isEditproductInDAtaBase}) => {
   const [product, setproduct] = useState(editingProduct)
   const getEditProduct = async(event) => {
     event.preventDefault();
-    isEditproductInDAtaBase(product)
+    const params = new URLSearchParams()
+    params.append("name", product.name)
+    params.append("productId", product.product_id)
+    params.append("category", product.category)
+    params.append("price", product.price)
+    params.append("imgUrl", product.img_url)
+    params.append("description", product.description)
+    const response = await axios.put( `http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${product.product_id}`, params.toString());
+    if (response.data.message === "Product updated successfully") {
+      isEditproductInDAtaBase(product)
+      document.getElementById("error-msg").textContent = "";
+    }else{
+      document.getElementById("error-msg").textContent = "Try Again";
+    }
+    
     
   }
   const handelName = (event) => {
@@ -22,7 +37,7 @@ const EditProduct = ({editingProduct, cancelEditProduct, isEditproductInDAtaBase
     setproduct({...product, category: event.target.value})
   }
   const handelPrice = (event) => {
-    setproduct({...product, price: event.target.value})
+    setproduct({...product, price: parseInt(event.target.value)})
   }
 
   return (

@@ -1,15 +1,12 @@
 import './index.css'
 const Product = (props) => {
-
-    const {product,editProductButtonClicked, letGotoCart, letAddToCart, handleProductClick, deleteProduct} = props   
-  
-    return(
-        
+    const {product,editProductButtonClicked, isAdmin, letGotoCart, letAddToCart, handleProductClick, deleteProduct} = props   
+    return(  
         <div className="product"  >
-            <div className='admin-btns'>
+            {isAdmin && <div className='admin-btns'>
                 <button className='product-edit-btn' onClick={() => {editProductButtonClicked(product)}}><i className="fa-solid fa-pen"></i></button>
-                <button className='product-delete-btn' onClick={() => {deleteProduct(product.product_id)}}><i className="fa-sharp fa-solid fa-trash"></i></button>
-            </div>
+                <button className='product-delete-btn' onClick={() => {deleteProduct(product.product_id, product)}}><i className="fa-sharp fa-solid fa-trash"></i></button>
+            </div>}
             <button id={`cardbtn${product.product_id}`} className = "product-btn"onClick={() => {handleProductClick(product)}}>
                 <img src={product.img_url} alt={product.name} className="product-img"/>
                 <h3>{product.name}</h3>

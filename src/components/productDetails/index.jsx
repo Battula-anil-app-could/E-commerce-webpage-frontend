@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import Product from '../product/index'
 import Order from "../order/index"
 import "./index.css"; 
 
 const ProductDetails = ({ product,editProductButtonClicked, deleteProduct, similarProducts, letGotoCart, letAddToCart, handleProductClick, backToHomePage, removeItemFromCart}) => {
   const [isClickBuyBtnInProductDetails, setisClickBuyBtnInProductDetails] = useState(false)
   const letAddToCarter = () => {
-    //console.log("form product cart")
     letAddToCart(product)
   }
-
   const buyItemFromProduct = () => {
     let user = JSON.parse(localStorage.getItem("userDetails"))
     if (user !== null){
@@ -48,22 +45,6 @@ const ProductDetails = ({ product,editProductButtonClicked, deleteProduct, simil
             {!product['cartItem']?<button type="button" className="addingToCartBtn "id={`cartbtn${product.product_id}`} onClick={letAddToCarter}>Add to Cart</button>:
               <button id="go-cart" onClick={letGotoCart}>Go to Cart</button >}  
             <button id="buy-btn" className="mt-3" onClick={buyItemFromProduct}>Buy</button>
-          </div>
-        </div>
-        <div className="similar-products">
-          <h3>Similar Products</h3>
-          <div className="products">
-            {similarProducts.map((product) => (
-              <Product
-              key={product.product_id}
-              product={product}
-              letGotoCart={letGotoCart}
-              letAddToCart={letAddToCart}
-              handleProductClick = {handleProductClick}
-              deleteProduct = {deleteProduct}
-              editProductButtonClicked = {editProductButtonClicked}
-            />   
-            ))}
           </div>
         </div>
       </div>

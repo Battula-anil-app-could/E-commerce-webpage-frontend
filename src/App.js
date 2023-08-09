@@ -20,7 +20,8 @@ class App extends React.Component{
     isClickSearchBtn: false,
     addProductForm: false,
     iseditProductButtonClicked: false,
-    editingProduct: null
+    editingProduct: null,
+    isAdmin: false
   }
  
 
@@ -53,7 +54,7 @@ class App extends React.Component{
     
   }
 
-  addCartItemsFromLocalStore = (products) => {
+  addCartItemsFromLocalStore = async (products) => {
     //console.log(products)
     let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
     let productsIds = productsInCart.map(p=>p.product_id)
@@ -62,7 +63,7 @@ class App extends React.Component{
       cartItem: productsIds.includes(eachProduct.product_id),
       quantity: productsIds.includes(eachProduct.product_id)?productsInCart.filter((eachOne) => eachProduct.product_id === eachOne.product_id)[0]['quantity']:0
     }));
-    console.log(productsWithCartItems)
+    // console.log(productsWithCartItems)
     this.filterCartProductsInHome(productsWithCartItems)
   }
    backToHomePage = () =>{
@@ -114,16 +115,16 @@ class App extends React.Component{
   }
   
   handleProductClick = (product) => {
-    const {productLis} = this.state
-    const similarProducts = productLis.filter(
-      (p) => p.category === product['category'] && p.product_id !== product['product_id']
-    );
-      //console.log(similarProducts)
-    this.setState({
-      selectedProduct: product,
-      similarProducts: similarProducts.slice(0, 6),
-      isClickOnGotocartOrProductDetails: true 
-    });
+      const {productLis} = this.state
+      const similarProducts = productLis.filter(
+        (p) => p.category === product['category'] && p.product_id !== product['product_id']
+      );
+      this.setState({
+        selectedProduct: product,
+        similarProducts: similarProducts.slice(0, 6),
+        isClickOnGotocartOrProductDetails: true 
+      });
+   
   };
 
   updateItemsInCart = () => {
@@ -184,9 +185,6 @@ class App extends React.Component{
       }
    }
 
-  componentDidMount(){   
-    this.productsData()
-  }
   showAddProductFrom = () => {
     this.setState({addProductForm: true})
   }
@@ -203,21 +201,20 @@ class App extends React.Component{
     this.setState({addProductForm: false})
   }
   deleteProduct = async (productId) => {
-    let {searchProducts} = this.state
-    const response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${productId}`)
-    if (response.data.message === "product Deleted Successfully"){
-      let userInput = ""
-      const response =  await axios.get(`http://localhost:8083/e-commerces-backend/backend.php/products/product?userInput=${userInput}`);
-      let products = response.data.map(eachOne => {
-        eachOne['cartItem'] = false;
-        return eachOne;
+    let { searchProducts, similarProducts, productLis } = this.state;
+    const response = await axios.delete(`http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${productId}`);
+    if (response.data.message === "product Deleted Successfully") {
+      const updatedSearchProducts = searchProducts.filter(p => p.product_id !== productId);
+      const updatedSimilarProducts = similarProducts.filter(p => p.product_id !== productId);
+      const updatedProductLis = productLis.filter(p => p.product_id !== productId);
+      this.setState({
+        searchProducts: updatedSearchProducts,
+        similarProducts: updatedSimilarProducts,
+        productLis: updatedProductLis,
       });
-      if (searchProducts !== []){
-        let filterSearcproducts = searchProducts.filter(p => p.product_id !== productId)
-        this.setState({searchProducts: filterSearcproducts})
-      }
-      this.addCartItemsFromLocalStore(products)
     }
+
+    
   }
   editProductButtonClicked = async (product) => {
     //console.log(product)
@@ -226,19 +223,36 @@ class App extends React.Component{
   cancelEditProduct = () => {
     this.setState({iseditProductButtonClicked: false, editingProduct: null})
   }
-  isEditproductInDAtaBase = async(product) => {
-    let productId = product.product_id
-    console.log(productId)
-    // const response = await axios.put(`http://localhost:8083/e-commerces-backend/backend.php/products/product?productId=${productId}`)
-    // // if (response.data.message === "product Deleted Successfully"){
-    // //   this.productsData()
-    // // }
-    // console.log(response.data)
-  } 
+ 
+  isEditproductInDAtaBase = async (updatedProduct) => {
+      const productId = updatedProduct.product_id;
+      
+        const updatedSearchProducts = this.state.searchProducts.map((p) =>
+          p.product_id === productId ? updatedProduct : p
+        );
+        const updatedSimilarProducts = this.state.similarProducts.map((p) =>
+          p.product_id === productId ? updatedProduct : p
+        );
+        const updatedProductLis = this.state.productLis.map((p) =>
+          p.product_id === productId ? updatedProduct : p
+        );
+        this.setState({
+          searchProducts: updatedSearchProducts,
+          similarProducts: updatedSimilarProducts,
+          productLis: updatedProductLis,
+          iseditProductButtonClicked: false,
+          editingProduct: null,
+        });
+      
+  };
+
+  componentDidMount(){   
+    this.productsData()
+  }
+    
+  
   render(){
-    const {productLis,editingProduct, iseditProductButtonClicked, isClickSearchBtn,addProductForm, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts, searchProducts} = this.state;
-    console.log(productLis)
-    console.log("above one is from")
+    const {productLis, isAdmin, editingProduct, iseditProductButtonClicked, isClickSearchBtn,addProductForm, isGetProducts, isClickOnGotocartOrProductDetails, itemsCoubtInCart, selectedProduct, similarProducts, searchProducts} = this.state;
     let renderProducts;
     if (isClickSearchBtn === false){
       renderProducts = productLis
@@ -255,6 +269,7 @@ class App extends React.Component{
             backToHomePage = {this.backToHomePage}
             productsData = {this.productsData}
             showAddProductFrom = {this.showAddProductFrom}
+            isAdmin = {isAdmin}
           />}
           {!isGetProducts&&<NavBAr />}
          <>
@@ -270,6 +285,7 @@ class App extends React.Component{
                       handleProductClick = {this.handleProductClick}
                       deleteProduct = {this.deleteProduct}
                       editProductButtonClicked = {this.editProductButtonClicked}
+                      isAdmin = {isAdmin}
                     />
                   ))}
                 </div>
@@ -289,7 +305,25 @@ class App extends React.Component{
                 removeItemFromCart = {this.removeItemFromCart}
                 deleteProduct = {this.deleteProduct}
                 editProductButtonClicked = {this.editProductButtonClicked}
-              />  
+              /> 
+              <div className="similar-products">
+                <h3>Similar Products</h3>
+                <div className="products">
+                    {similarProducts.map((product) => (
+                      <Product
+                        key={product.product_id}
+                        product={product}
+                        letGotoCart={this.letGotoCart}
+                        letAddToCart={this.letAddToCart}
+                        handleProductClick = {this.handleProductClick}
+                        deleteProduct = {this.deleteProduct}
+                        editProductButtonClicked = {this.editProductButtonClicked}
+                        isAdmin = {isAdmin}
+                      />
+                    ))}
+                  </div>
+                </div>
+               
             </div>}
           </> 
           {addProductForm && <AddProduct cancelAddProduct = {this.cancelAddProduct} addProduct={this.addProduct}/>}

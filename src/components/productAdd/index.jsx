@@ -24,8 +24,8 @@ const AddProduct = ({cancelAddProduct, addProduct}) => {
     params.append("description", product.description);
     params.append("category", product.category);
 
-    const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/product", params.toString())
-    console.log(response)
+    const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/products", params.toString())
+    //console.log(response)
     if (response.data.message === "product Added Successfully"){
         document.getElementById("error-msg").textContent = "" 
         addProduct()
