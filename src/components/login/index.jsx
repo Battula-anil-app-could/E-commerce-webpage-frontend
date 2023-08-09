@@ -1,18 +1,20 @@
 import axios from "axios"
 import './index.css';
+import { useState } from "react";
 
 
 const Login = (props) => {
+  const [isAdmin, setisAdmin] = useState(false)
   const {CancelLogin, loginSuccess} = props;
   const getLogin = async (event) => {
     event.preventDefault();
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
-    let isAdmin = document.getElementById("isAdmin").checked 
-    console.log(isAdmin)
+    let AdminPassword = document.getElementById("password-admin")? document.getElementById("password-admin").value:false
     let params = new URLSearchParams();
     params.append("email", email);
     params.append("password", password);
+    params.append("AdminPassword", AdminPassword)
 
     const response = await axios.post("http://localhost:8083/e-commerces-backend/backend.php/login", params.toString());
     //console.log(response.data);
@@ -22,11 +24,29 @@ const Login = (props) => {
         name: response.data.user_name,
         email: response.data.email,
         adderss: response.data.adderss, 
-        mobileNumber: response.data.Number
+        mobileNumber: response.data.Number,
+        isAdmin: false
       }
       localStorage.setItem("userDetails", JSON.stringify(userDetails))
+      document.getElementById("error-msg").textContent = ""
       await loginSuccess()
       
+    }else if (response.data.message === "Admin User Checking Success"){
+      const userDetails = {
+        id: response.data.user_id,
+        name: response.data.user_name,
+        email: response.data.email,
+        adderss: response.data.adderss, 
+        mobileNumber: response.data.Number,
+        isAdmin: true
+      }
+      localStorage.setItem("userDetails", JSON.stringify(userDetails))
+      document.getElementById("error-msg").textContent = ""
+      document.getElementById("password-admin").value = ""
+      await loginSuccess()
+    }else if (response.data.message === "Invalid Admin"){
+      document.getElementById("password-admin").value = ""
+      document.getElementById("error-msg").textContent = "Invalid Admin"
     }else if (response.data.message === "Invalid Password/email"){
       document.getElementById("error-msg").textContent = "Invalid Password/email"
     }else if(response.data.message === "Please enter required email and password"){
@@ -38,6 +58,7 @@ const Login = (props) => {
 
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
+    
     
     
   }
@@ -66,11 +87,20 @@ const Login = (props) => {
                   
                 />
               </label>
+              {isAdmin && <label>
+                Admin Password:
+                <input
+                  id='password-admin'
+                  type="password"
+                  placeholder='Enter Your Admin Password'
+                  
+                />
+              </label>}
               <center><p id="error-msg"></p></center>
               <div className="button-container">
                 <div className="check-box-card">
                       <label htmlFor="isAdmin" className="pt-2">Admin: </label>
-                    <input type="checkbox" id="isAdmin" /> 
+                    <input type="checkbox" id="isAdmin" onChange={() => {setisAdmin(prevSate => !prevSate)}}/> 
                 </div>
                 <div className="buttons-card">
                   <button type="submit" onClick={getLogin}>Submit</button>

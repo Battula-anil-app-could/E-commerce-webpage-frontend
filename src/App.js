@@ -28,6 +28,7 @@ class App extends React.Component{
  
   filterCartProductsInHome = (productsWithCartItems) => {
     //console.log(productsWithCartItems)
+    let Admin = localStorage.getItem("userDetails")?JSON.parse(localStorage.getItem("userDetails")).isAdmin:false
     const {similarProducts, selectedProduct} = this.state 
     let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
     let productIds = productsInCart.map(eachOne => eachOne.product_id)
@@ -40,15 +41,15 @@ class App extends React.Component{
           return eachItem
         }
       })
-      this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,  similarProducts: updatedSimlarProducts})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,  similarProducts: updatedSimlarProducts})
     }else{
-      this.setState({productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
     }
 
     if (selectedProduct !== false){
       if (productIds.includes(selectedProduct.product_id)){
         let selectedProductInCart = productsInCart.filter(eachProduct => eachProduct.product_id === selectedProduct.product_id)[0]
-        this.setState({selectedProduct: selectedProductInCart})
+        this.setState({selectedProduct: selectedProductInCart, isAdmin:Admin,})
       }
     }
     
@@ -67,17 +68,28 @@ class App extends React.Component{
     this.filterCartProductsInHome(productsWithCartItems)
   }
    backToHomePage = () =>{
+    const {productLis} = this.state
     const user = JSON.parse(localStorage.getItem("userDetails"));
+    let Admin = localStorage.getItem("userDetails")?JSON.parse(localStorage.getItem("userDetails")).isAdmin:false
     if (user === null){
-      const {productLis} = this.state
-      //console.log("working backHome function")
+      //console.log("working user null function")
       let planeProducts = productLis.map((eachOne) => ({
         ...eachOne,
         cartItem: false,
       }));
-      this.setState({isClickOnGotocartOrProductDetails: false, productLis: planeProducts, isClickSearchBtn:false })
+      this.setState({isAdmin:Admin, isClickOnGotocartOrProductDetails: false, productLis: planeProducts, isClickSearchBtn:false })
     }else{
-      this.setState({isClickOnGotocartOrProductDetails: false, isClickSearchBtn:false})
+      let productsInCart = JSON.parse(localStorage.getItem("productsInCart"))
+      let productsIdsInCart = productsInCart.map(p => p.product_id)
+      let updateProducts = productLis.map(p => {
+        if(productsIdsInCart.includes(p.product_id)){
+          return productsInCart.filter(e => e.product_id === p.product_id)[0]
+        }else{
+          return p
+        }
+      })
+      //console.log(updateProducts)
+      this.setState({productLis:updateProducts, isAdmin:Admin, isClickOnGotocartOrProductDetails: false, isClickSearchBtn:false})
     }
     
   }
@@ -92,7 +104,7 @@ class App extends React.Component{
         return eachOne;
       });
       if (userInput !== ""){
-        let productsIdsInCart = JSON.parse(localStorage.getItem("productsInCart"))?JSON.parse(localStorage.getItem("productsInCart")).map(eachOne => eachOne.product_id):null;
+        let productsIdsInCart = localStorage.getItem("productsInCart")?JSON.parse(localStorage.getItem("productsInCart")).map(eachOne => eachOne.product_id):null;
         if (productsIdsInCart !== null){
           //console.log(productsIdsInCart)
           let productsInCart = products.map(eachOne => {

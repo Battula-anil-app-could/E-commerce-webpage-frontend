@@ -71,7 +71,6 @@ button:focus {
 
 .similar-product {
   flex: 0 0 calc(33.33% - 20px);
-  margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #ddd;
   text-align: center;
