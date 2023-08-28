@@ -13,7 +13,7 @@ class App extends React.Component{
     productLis: [], 
     isGetProducts: false, 
     isClickOnGotocartOrProductDetails:false, 
-    itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0,
+    itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length > 0? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0 : 0,
     selectedProduct: false,
     similarProducts: [],
     searchProducts: [],
@@ -41,9 +41,9 @@ class App extends React.Component{
           return eachItem
         }
       })
-      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0,  similarProducts: updatedSimlarProducts})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length > 0? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0 : 0,  similarProducts: updatedSimlarProducts})
     }else{
-      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length > 0? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0 : 0})
     }
 
     if (selectedProduct !== false){
@@ -141,7 +141,7 @@ class App extends React.Component{
 
   updateItemsInCart = () => {
     //console.log("called updated")
-    let countOfCart = JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num))
+    let countOfCart = localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length > 0? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0 : 0
     this.setState({itemsCoubtInCart: countOfCart})
   }
 
