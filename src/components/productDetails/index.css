@@ -7,6 +7,9 @@
 }
 
 @media (max-width: 600px) {
+  .product-details-container{
+    padding-top: 22%;
+  }
   .product-details {
     flex-direction: column;
   }

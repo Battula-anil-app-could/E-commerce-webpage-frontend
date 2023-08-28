@@ -13,7 +13,7 @@ class App extends React.Component{
     productLis: [], 
     isGetProducts: false, 
     isClickOnGotocartOrProductDetails:false, 
-    itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,
+    itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0,
     selectedProduct: false,
     similarProducts: [],
     searchProducts: [],
@@ -41,9 +41,9 @@ class App extends React.Component{
           return eachItem
         }
       })
-      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0,  similarProducts: updatedSimlarProducts})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0,  similarProducts: updatedSimlarProducts})
     }else{
-      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).length : 0})
+      this.setState({isAdmin:Admin, productLis: productsWithCartItems, itemsCoubtInCart: localStorage.getItem("productsInCart") ? JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num)) : 0})
     }
 
     if (selectedProduct !== false){
@@ -141,7 +141,7 @@ class App extends React.Component{
 
   updateItemsInCart = () => {
     //console.log("called updated")
-    let countOfCart = JSON.parse(localStorage.getItem("productsInCart")).length
+    let countOfCart = JSON.parse(localStorage.getItem("productsInCart")).map((quan) => (parseInt(quan.quantity))).reduce((total, num) => (total + num))
     this.setState({itemsCoubtInCart: countOfCart})
   }
 
@@ -306,6 +306,7 @@ class App extends React.Component{
               backToHomePage={this.backToHomePage} 
               removeItemFromCart = {this.removeItemFromCart}
               updateQuantity = {this.updateQuantity}
+              updateItemsInCart = {this.updateItemsInCart}
               />: <div id="product-listing">
               <ProductDetails
                 product={selectedProduct}
@@ -318,9 +319,9 @@ class App extends React.Component{
                 deleteProduct = {this.deleteProduct}
                 editProductButtonClicked = {this.editProductButtonClicked}
               /> 
-              <div className="similar-products">
+              <div className="similar-products mr-3 mb-1">
                 <h3>Similar Products</h3>
-                <div className="products">
+                <div className="products mr-3">
                     {similarProducts.map((product) => (
                       <Product
                         key={product.product_id}

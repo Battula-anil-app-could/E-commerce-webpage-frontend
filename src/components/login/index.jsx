@@ -10,7 +10,7 @@ const Login = (props) => {
     event.preventDefault();
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
-    let AdminPassword = document.getElementById("password-admin")? document.getElementById("password-admin").value:false
+    let AdminPassword = document.getElementById("password-admin")? document.getElementById("password-admin").value:"null"
     let params = new URLSearchParams();
     params.append("email", email);
     params.append("password", password);
@@ -42,11 +42,10 @@ const Login = (props) => {
       }
       localStorage.setItem("userDetails", JSON.stringify(userDetails))
       document.getElementById("error-msg").textContent = ""
-      document.getElementById("password-admin").value = ""
       await loginSuccess()
     }else if (response.data.message === "Invalid Admin"){
-      document.getElementById("password-admin").value = ""
       document.getElementById("error-msg").textContent = "Invalid Admin"
+      document.getElementById("password-admin").value = ""
     }else if (response.data.message === "Invalid Password/email"){
       document.getElementById("error-msg").textContent = "Invalid Password/email"
     }else if(response.data.message === "Please enter required email and password"){

@@ -6,7 +6,7 @@ import Order from "../order/index"
 import "./index.css";
 
 const Cart = (props) => {
-  const {removeItemFromCart, productLis} = props;
+  const {removeItemFromCart, productLis, updateItemsInCart} = props;
   const [cartItems, setcartItems] = useState(JSON.parse(localStorage.getItem("productsInCart"))?JSON.parse(localStorage.getItem("productsInCart")):[]);
   const [isOredrClicked, setisOredrClicked] = useState(false)
   const [itemsForBuying, setitemsForBuying] = useState(JSON.parse(localStorage.getItem("productsInCart"))?JSON.parse(localStorage.getItem("productsInCart")):[])
@@ -40,6 +40,7 @@ const Cart = (props) => {
     localStorage.setItem("productsInCart", JSON.stringify(productInCart))
     setcartItems(productInCart)
     setitemsForBuying(productInCart)
+    updateItemsInCart()
     
   }
 

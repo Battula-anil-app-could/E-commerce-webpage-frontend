@@ -67,7 +67,7 @@ const ProfileCard = () => {
             <h2>{profile.name}</h2>
             <p><span className='pr-2'>Email: </span> {profile.email}</p>
             <p><span className='pr-2'>Phone Number: </span> {profile.mobileNumber}</p>
-            <p><span className='pr-2'>Adderss: </span> {profile.adderss}</p>
+            <p><span className='pr-2'>Address: </span> {profile.adderss}</p>
             <p><span className='pr-2'>Items in Cart: </span> {profile.cartItems}</p>
             <button className='btn btn-outline-warning mt-3 mb-3' onClick={handleEditProfile}>Edit Profile</button>
         </div>:<div className="profile-card">
@@ -101,7 +101,7 @@ const ProfileCard = () => {
                 <input
                   id='adderss'
                   type="text"
-                  placeholder='Add Your Adderss'
+                  placeholder='Add Your Address'
                   className='p-2'
                   value={profile.adderss || ""}
                   onChange={handleAdderssChange}
