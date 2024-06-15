@@ -42,7 +42,7 @@ const ProfileCard = () => {
     params.append("mobileNumber", profile.mobileNumber);
     params.append("address", profile.address);
     let response = await axios.put(
-      "http://localhost:3005/api/user",
+      "https://anil-api-ecommerces.onrender.com/api/user",
       params.toString()
     );
     if (

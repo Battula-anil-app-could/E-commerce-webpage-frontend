@@ -41,7 +41,7 @@ const NavBAr = (props) => {
     
     let userId = JSON.parse(localStorage.getItem("userDetails")).id;
     let response = await axios.get(
-      `http://localhost:3005/api/cart/cartItems?userId=${userId}`
+      `https://anil-api-ecommerces.onrender.com/api/cart/cartItems?userId=${userId}`
     );
     let productsWithCartItems;
     // console.log("cartItems ",response.data)

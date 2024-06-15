@@ -20,7 +20,7 @@ const Signup = (props) => {
       params.append("password", password);
       params.append("adderss", adderss);
       const response = await axios.post(
-        "http://localhost:3005/api/signup",
+        "https://anil-api-ecommerces.onrender.com/api/signup",
         params.toString()
       );
       // console.log(response.data);

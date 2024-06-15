@@ -18,7 +18,7 @@ const EditProduct = ({
     params.append("imgUrl", product.img_url);
     params.append("description", product.description);
     const response = await axios.put(
-      `http://localhost:3005/api/products?productId=${product.product_id}`,
+      `https://anil-api-ecommerces.onrender.com/api/products?productId=${product.product_id}`,
       params.toString()
     );
     if (response.data.message === "Product Updated Successfully") {

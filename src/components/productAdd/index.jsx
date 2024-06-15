@@ -24,7 +24,7 @@ const AddProduct = ({ cancelAddProduct, addProduct, backToHomePage }) => {
     params.append("category", product.category);
 
     const response = await axios.post(
-      "http://localhost:3005/api/products",
+      "https://anil-api-ecommerces.onrender.com/api/products",
       params.toString()
     );
     //console.log(response)

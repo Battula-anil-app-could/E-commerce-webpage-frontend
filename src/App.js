@@ -143,7 +143,7 @@ class App extends React.Component {
 
   productsData = async (userInput = "") => {
     const response = await axios.get(
-      `http://localhost:3005/api/products?userInput=${userInput}`
+      `https://anil-api-ecommerces.onrender.com/api/products?userInput=${userInput}`
     );
     // console.log("products",response.data)
     //console.log(userInput);
@@ -234,7 +234,7 @@ class App extends React.Component {
       params.append("productId", product.product_id);
       params.append("userId", userId);
       let response = await axios.post(
-        "http://localhost:3005/api/Cart",
+        "https://anil-api-ecommerces.onrender.com/api/Cart",
         params.toString()
       );
       if (response.data.message === "Success") {
@@ -278,7 +278,7 @@ class App extends React.Component {
     // console.log(productId)
     // console.log(userId)
     let response = await axios.delete(
-      `http://localhost:3005/api/Cart?userId=${userId}&productId=${productId}`
+      `https://anil-api-ecommerces.onrender.com/api/Cart?userId=${userId}&productId=${productId}`
     );
     //console.log(response)
     if (response.data.message === "Success") {
@@ -291,7 +291,7 @@ class App extends React.Component {
   };
   addProduct = async (userInput = "") => {
     const response = await axios.get(
-      `http://localhost:3005/api/products?userInput=${userInput}`
+      `https://anil-api-ecommerces.onrender.com/api/products?userInput=${userInput}`
     );
     let products = response.data.map((eachOne) => {
       eachOne["cartItem"] = false;
@@ -305,7 +305,7 @@ class App extends React.Component {
   deleteProduct = async (productId) => {
     let { searchProducts, similarProducts, productLis } = this.state;
     const response = await axios.delete(
-      `http://localhost:3005/api/products?productId=${productId}`
+      `https://anil-api-ecommerces.onrender.com/api/products?productId=${productId}`
     );
     if (response.data.message === "Product Deleted Successfully") {
       const updatedSearchProducts = searchProducts.filter(

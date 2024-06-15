@@ -28,31 +28,36 @@ const Order = ({ itemsForBuying, handleCancel, removeItem }) => {
   const netPaymentRef = useRef(null);
 
   const handleProceed = async () => {
-    if (
-      cashOnDeliveryRef.current.checked ||
-      upiRef.current.checked ||
-      netPaymentRef.current.checked
-    ) {
-      let user = JSON.parse(localStorage.getItem("userDetails"));
-      let params = new URLSearchParams();
-      params.append("userId", user.id);
-      params.append("buyingItems", JSON.stringify(itemsForBuying));
-      params.append("totalPrice", payableAmount)
-      let response = await axios.post(
-        "http://localhost:3005/api/Order",
-        params.toString()
-      );
-      // console.log(response.data)
-      document.getElementById("order-msg").textContent = "Success, Thank You";
-      document.getElementById("order-msg").style.color = "#33cc33";
-      itemsForBuying.map((eachItem) => removeItem(eachItem.product_id));
-      setTimeout(() => {
-        handleCancel();
-      }, 2000);
-    } else {
-      document.getElementById("order-msg").textContent =
-        "Please select Payment Method";
-      document.getElementById("order-msg").style.color = "red";
+    try{
+
+      if (
+        cashOnDeliveryRef.current.checked ||
+        upiRef.current.checked ||
+        netPaymentRef.current.checked
+      ) {
+        let user = JSON.parse(localStorage.getItem("userDetails"));
+        let params = new URLSearchParams();
+        params.append("userId", user.id);
+        params.append("buyingItems", JSON.stringify(itemsForBuying));
+        params.append("totalPrice", payableAmount)
+        let response = await axios.post(
+          "https://anil-api-ecommerces.onrender.com/api/Order",
+          params.toString()
+        );
+        // console.log(response.data)
+        document.getElementById("order-msg").textContent = "Success, Thank You";
+        document.getElementById("order-msg").style.color = "#33cc33";
+        itemsForBuying.map((eachItem) => removeItem(eachItem.product_id));
+        setTimeout(() => {
+          handleCancel();
+        }, 2000);
+      } else {
+        document.getElementById("order-msg").textContent =
+          "Please select Payment Method";
+        document.getElementById("order-msg").style.color = "red";
+      }
+    }catch{
+      handleCancel();
     }
   };
 

@@ -47,7 +47,7 @@ const Cart = (props) => {
     params.append("userId", userId);
     params.append("quantity", quantityValue);
     let response = await axios.put(
-      "http://localhost:3005/api/Cart",
+      "https://anil-api-ecommerces.onrender.com/api/Cart",
       params.toString()
     );
     //console.log(response.data)
