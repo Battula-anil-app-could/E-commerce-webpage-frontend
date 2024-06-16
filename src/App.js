@@ -400,6 +400,7 @@ class App extends React.Component {
           {!isClickOnGotocartOrProductDetails ? (
             <div className="products-card">
               <h2>Featured Products</h2>
+              {isGetProducts?(
               <div className="products">
                 {renderProducts.map((product) => (
                   <Product
@@ -414,6 +415,9 @@ class App extends React.Component {
                   />
                 ))}
               </div>
+              ):(<div className="loading-spinner">
+                <div className="spinner"></div>
+              </div>)}
             </div>
           ) : !selectedProduct ? (
             <Cart
