@@ -78,7 +78,7 @@ const Cart = (props) => {
   };
 
   const totalPrice = cartItems.reduce((total, item) => {
-    return total + item.price * item.quantity;
+    return total + item.price;
   }, 0);
   //console.log(totalPrice)
   return (

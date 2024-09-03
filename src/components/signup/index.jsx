@@ -23,7 +23,7 @@ const Signup = (props) => {
         "https://anil-api-ecommerces.onrender.com/api/signup",
         params.toString()
       );
-      // console.log(response.data);
+      console.log(response.data);
       if (response.data.message === "The length of name should be above 2") {
         document.getElementById("error-msg").style.color = "red";
         document.getElementById("error-msg").textContent =
